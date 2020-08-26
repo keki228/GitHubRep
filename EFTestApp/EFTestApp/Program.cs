@@ -1,8 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Markup;
 using EFTestApp.Models;
+using Microsoft.Extensions.Configuration;
 using AppContext = EFTestApp.Models.AppContext;
+using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace EFTestApp
 {
@@ -10,6 +14,14 @@ namespace EFTestApp
     {
         public static void Main()
         {
+            var builder = new ConfigurationBuilder();
+            builder.SetBasePath(Environment.CurrentDirectory);
+            builder.AddJsonFile("appsettings.json");
+            var config = builder.Build();
+            string connectionString = config.GetConnectionString("DefaultConnection");
+            var optionsBuilder = new DbContextOptionsBuilder<AppContext>();
+            var options = optionsBuilder.UseSqlServer(connectionString).Options;
+
             string choice = "";
             while (choice != "0")
             {
@@ -26,25 +38,25 @@ namespace EFTestApp
                 switch (ch)
                 {
                     case 1:
-                        AddUser();
+                        AddUser(options);
                         break;
                     case 2:
-                        ShowUsers();
+                        ShowUsers(options);
                         break;
                     case 3:
-                        EditUser();
+                        EditUser(options);
                         break;
                     case 4:
-                        RemoveUser();
+                        RemoveUser(options);
                         break;
                     default:
                         break;
                 }
             }           
         }
-        public static void AddUser()
+        public static void AddUser(DbContextOptions<AppContext> options)
         {
-            using (AppContext db = new AppContext())
+            using (AppContext db = new AppContext(options))
             {
                 Console.WriteLine("Enter name: ");
                 string name = Console.ReadLine();
@@ -62,9 +74,9 @@ namespace EFTestApp
                 Console.WriteLine("User has been successfully saved.");
             }
         }
-        public static void ShowUsers()
+        public static void ShowUsers(DbContextOptions<AppContext> options)
         {
-            using (AppContext db = new AppContext())
+            using (AppContext db = new AppContext(options))
             {
                 var users = db.Users.ToList();
                 foreach(var user in users)
@@ -73,9 +85,9 @@ namespace EFTestApp
                 }
             }
         }
-        public static void EditUser()
+        public static void EditUser(DbContextOptions<AppContext> options)
         {
-            using (AppContext db = new AppContext())
+            using (AppContext db = new AppContext(options))
             {
                 User user = null;
                 Console.WriteLine("Enter name: ");
@@ -106,9 +118,9 @@ namespace EFTestApp
                 }
             }
         }
-        public static void RemoveUser()
+        public static void RemoveUser(DbContextOptions<AppContext> options)
         {
-            using(AppContext db = new AppContext())
+            using(AppContext db = new AppContext(options))
             {
                 User user = null;
                 Console.WriteLine("Enter name: ");
