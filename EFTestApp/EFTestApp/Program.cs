@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Windows.Markup;
 using EFTestApp.Models;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Logging;
 using AppContext = EFTestApp.Models.AppContext;
 
 namespace EFTestApp
@@ -66,6 +68,7 @@ namespace EFTestApp
         {
             using (AppContext db = new AppContext())
             {
+                //db.GetService<ILoggerFactory>().AddProvider(new MyLoggerProvider());
                 var users = db.Users.ToList();
                 foreach(var user in users)
                 {
