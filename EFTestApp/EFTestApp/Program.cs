@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Markup;
 using EFTestApp.Models;
+using Microsoft.EntityFrameworkCore;
 using AppContext = EFTestApp.Models.AppContext;
 
 namespace EFTestApp
@@ -21,25 +22,29 @@ namespace EFTestApp
                 User aman = new User { Name = "Amangeldi", Company = ts };
                 User sezim = new User { Name = "Sezim", Company = google };
                 User unknown = new User { Name = "X3", Company = google };
-                db.Users.AddRange(nurs, aman, sezim, unknown);
+                User useless = new User { Name = "lazyman" };
+                db.Users.AddRange(nurs, aman, sezim, unknown, useless);
                 db.SaveChanges();
 
-                var users = db.Users.ToList();
+                var users = db.Users
+                    .Include(u => u.Company)
+                    .ToList();
                 foreach(var user in users)
                 {
-                    Console.WriteLine($"{user.Name}");
+                    Console.WriteLine($"{user.Name} - {user.Company?.Name}");
                 }
 
-                var comp = db.Companies.FirstOrDefault(x => x == google);
-                db.Companies.RemoveRange(comp);
-                db.SaveChanges();
-
-                var newusers = db.Users.ToList();
-                foreach (var user in newusers)
+                var companies = db.Companies
+                    .Include(u => u.Users)
+                    .ToList();
+                foreach(var company in companies)
                 {
-                    Console.WriteLine($"{user.Name}");
+                    Console.WriteLine($"Company: {company.Name}");
+                    foreach(var user in company.Users)
+                    {
+                        Console.WriteLine(user.Name);
+                    }
                 }
-
             }
         }
     }

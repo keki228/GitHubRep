@@ -10,7 +10,9 @@ namespace EFTestApp.Models
     {
         public DbSet<Company> Companies { get; set; }
         public DbSet<User> Users { get; set; }
-        
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<City> Cities { get; set; }
+        public DbSet<Position> Positions { get; set; }
         public AppContext()
         {
             Database.EnsureDeleted();
@@ -22,10 +24,10 @@ namespace EFTestApp.Models
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
+            /*modelBuilder.Entity<User>()
                 .HasOne(p => p.Company)
                 .WithMany(t => t.Users)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);*/
         }
     }
 }
