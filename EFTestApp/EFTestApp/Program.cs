@@ -10,120 +10,36 @@ namespace EFTestApp
     {
         public static void Main()
         {
-            string choice = "";
-            while (choice != "0")
-            {
-                Console.WriteLine("\n0 - to exit" +
-                    "\n1 - to create new user" +
-                    "\n2 - to read list of users" +
-                    "\n3 - to edit existing user" +
-                    "\n4 - to remove user");
-                choice = Console.ReadLine();
-                if (!int.TryParse(choice, out int ch))
-                {
-                    continue;
-                }
-                switch (ch)
-                {
-                    case 1:
-                        AddUser();
-                        break;
-                    case 2:
-                        ShowUsers();
-                        break;
-                    case 3:
-                        EditUser();
-                        break;
-                    case 4:
-                        RemoveUser();
-                        break;
-                    default:
-                        break;
-                }
-            }           
-        }
-        public static void AddUser()
-        {
             using (AppContext db = new AppContext())
             {
-                Console.WriteLine("Enter name: ");
-                string name = Console.ReadLine();
-                string temp;
-                int age;
-                do
-                {
-                    Console.WriteLine("Enter age: ");
-                    temp = Console.ReadLine();
-                }
-                while (!int.TryParse(temp, out age));
-                var user = new User { Name = name, Age = age };
-                db.Users.Add(user);
+                Company ts = new Company { Name = "TimelySoft" };
+                Company google = new Company { Name = "Google" };
+                db.Companies.AddRange(ts, google);
                 db.SaveChanges();
-                Console.WriteLine("User has been successfully saved.");
-            }
-        }
-        public static void ShowUsers()
-        {
-            using (AppContext db = new AppContext())
-            {
+
+                User nurs = new User { Name = "Nursultan", Company = ts };
+                User aman = new User { Name = "Amangeldi", Company = ts };
+                User sezim = new User { Name = "Sezim", Company = google };
+                User unknown = new User { Name = "X3", Company = google };
+                db.Users.AddRange(nurs, aman, sezim, unknown);
+                db.SaveChanges();
+
                 var users = db.Users.ToList();
                 foreach(var user in users)
                 {
-                    Console.WriteLine($"{user.Id} - {user.Name} - {user.Age}");
+                    Console.WriteLine($"{user.Name}");
                 }
-            }
-        }
-        public static void EditUser()
-        {
-            using (AppContext db = new AppContext())
-            {
-                User user = null;
-                Console.WriteLine("Enter name: ");
-                string name = Console.ReadLine();
-                user = db.Users.FirstOrDefault(x => x.Name == name);
-                if(user!=null)
-                {
-                    Console.WriteLine("Enter new name: ");
-                    name = Console.ReadLine();
-                    user.Name = name;
 
-                    string temp;
-                    int age;
-                    do
-                    {
-                        Console.WriteLine("Enter age: ");
-                        temp = Console.ReadLine();
-                    }
-                    while (!int.TryParse(temp, out age));
-                    user.Age = age;
-                    db.Users.Update(user);
-                    db.SaveChanges();
-                    Console.WriteLine("User was updated.");
-                }
-                else
+                var comp = db.Companies.FirstOrDefault(x => x == google);
+                db.Companies.RemoveRange(comp);
+                db.SaveChanges();
+
+                var newusers = db.Users.ToList();
+                foreach (var user in newusers)
                 {
-                    Console.WriteLine("User does not exist.");
+                    Console.WriteLine($"{user.Name}");
                 }
-            }
-        }
-        public static void RemoveUser()
-        {
-            using(AppContext db = new AppContext())
-            {
-                User user = null;
-                Console.WriteLine("Enter name: ");
-                string name = Console.ReadLine();
-                user = db.Users.FirstOrDefault(x => x.Name == name);
-                if(user!=null)
-                {
-                    db.Users.Remove(user);
-                    db.SaveChanges();
-                    Console.WriteLine("User has been successfully removed.");
-                }
-                else
-                {
-                    Console.WriteLine("User was not found.");
-                }
+
             }
         }
     }
