@@ -56,7 +56,9 @@ namespace EFTestApp
                     temp = Console.ReadLine();
                 }
                 while (!int.TryParse(temp, out age));
-                var user = new User { Name = name, Age = age };
+                Console.WriteLine("Enter pos: ");
+                string pos = Console.ReadLine();
+                var user = new User { Name = name, Age = age, Position = pos };
                 db.Users.Add(user);
                 db.SaveChanges();
                 Console.WriteLine("User has been successfully saved.");
@@ -69,7 +71,7 @@ namespace EFTestApp
                 var users = db.Users.ToList();
                 foreach(var user in users)
                 {
-                    Console.WriteLine($"{user.Id} - {user.Name} - {user.Age}");
+                    Console.WriteLine(user);
                 }
             }
         }
@@ -96,6 +98,11 @@ namespace EFTestApp
                     }
                     while (!int.TryParse(temp, out age));
                     user.Age = age;
+
+                    Console.WriteLine("Enter new pos: ");
+                    string pos = Console.ReadLine();
+                    user.Position = pos;
+
                     db.Users.Update(user);
                     db.SaveChanges();
                     Console.WriteLine("User was updated.");

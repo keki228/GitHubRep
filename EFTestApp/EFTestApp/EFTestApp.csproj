@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200827103349_AddedRelationship.cs" />
+    <Compile Remove="Migrations\20200827103349_AddedRelationship.Designer.cs" />
+    <Compile Remove="Migrations\20200827103721_AddedSomeRelations.cs" />
+    <Compile Remove="Migrations\20200827103721_AddedSomeRelations.Designer.cs" />
+    <Compile Remove="Migrations\20200827104034_AddedSomeRelations.cs" />
+    <Compile Remove="Migrations\20200827104034_AddedSomeRelations.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.7">
